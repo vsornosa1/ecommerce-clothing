@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import Categories from './components/categories/categories.component';
 
 const App = () => {

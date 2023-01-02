@@ -1,6 +1,10 @@
-import { useState } from "react";
 import { Link } from 'react-router-dom';
+import { useState, useContext } from "react";
+
+import { UserContext } from '../../../contexts/user.context';
 import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from "../../../utils/firebase/firebase.utils";
+
+
 
 const defaultFormFields = {
 	displayName: '',
@@ -9,13 +13,19 @@ const defaultFormFields = {
 	confirmPassword: ''
 }
 
+
+
 const SignUpNew = () => {
 	const [formFields, setFormFields] = useState(defaultFormFields);
 	const { displayName, email, password, confirmPassword } = formFields;
 
+	const { setCurrentUser } = useContext(UserContext);
+
+
 	const resetFormFields = () => {
 		setFormFields(defaultFormFields);
 	};
+
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -26,6 +36,8 @@ const SignUpNew = () => {
 		try {
 			const { user } = await createAuthUserWithEmailAndPassword(email, password);
 			await createUserDocumentFromAuth(user, {displayName});
+			setCurrentUser(user);
+
 			resetFormFields();
 			console.info('User created successfully.');
 		} catch (error) {
@@ -37,10 +49,13 @@ const SignUpNew = () => {
 		}
 	};
 
+
 	const handleChange = (event) => {
 		const { name, value } = event.target;
 		setFormFields({...formFields, [name]: value});
 	};
+
+
 
 	return (
 		<div className="flex h-full">
@@ -146,7 +161,7 @@ const SignUpNew = () => {
 			<div className="relative hidden w-0 flex-1 lg:block">
 				<img
 					className="absolute inset-0 mb-0 ml-0 min-h-full w-full object-cover drop-shadow-lg rounded-l-lg"
-					src={require("../../../assets/signup_clothes.jpg")}
+					src={require("../../../assets/clothes.jpg")}
 					alt=""
 				/>
 			</div>
